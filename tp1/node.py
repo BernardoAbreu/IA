@@ -12,3 +12,14 @@ class Node():
 
     def __repr__(self):
         return self.__str__()
+
+
+def solution(node):
+    sol_list = []
+    aux = node
+
+    while aux is not None:
+        sol_list.append(aux)
+        aux = aux.parent
+
+    return sol_list[::-1]
