@@ -8,6 +8,15 @@ class Problem(object):
         self.dimensions = self.map.shape
         self.initial = initial_state
         self.goal = goal_state
+        self.directions = ((0, -1),
+                           (0, 1),
+                           (-1, 0),
+                           (1, 0),
+                           (-1, -1),
+                           (-1, 1),
+                           (1, -1),
+                           (1, 1),
+                           )
 
     def goal_test(self, state):
         return self.goal == state
@@ -32,13 +41,8 @@ class Problem(object):
         return True
 
     def get_actions(self, state):
-        actions = []
-
-        for i in range(-1, 2):
-            for j in range(-1, 2):
-                if (i or j) and self.__available(state, i, j):
-                    actions.append(Point(i, j))
-        return actions
+        return [Point(i, j) for i, j in self.directions
+                if self.__available(state, i, j)]
 
     def result(self, parent_state, action):
         return parent_state + action
