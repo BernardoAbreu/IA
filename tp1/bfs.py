@@ -1,50 +1,82 @@
 from node import Node
-from numpy import np
+from node import solution
+from point import Point
+from problem import Problem
+import numpy as np
+from collections import deque
 
-def solution(node):
-    return []
+
+def read_map(filename):
+    with open(filename, 'r') as f:
+        f.readline()                            # Skip first line
+        _, height = f.readline().split()
+        _, width = f.readline().split()
+        map_name = f.readline().rstrip()
+        matrix = np.array([list(line.rstrip()) for line in f])
+
+    height = int(height)
+    width = int(width)
+    return map_name, matrix
 
 
 def child_node(problem, parent, action):
-    return Node(problem.result(parent.STATE, action),
+    return Node(problem.result(parent.state, action),
                 parent.path_cost + problem.step_cost(parent.state, action),
                 parent,
                 action)
 
 
-class bfs(object):
+class ExploredSet(object):
 
-    def __empty(self, frontier):
-        pass
+    def __init__(self, dimensions):
+        self.visited = np.zeros(dimensions, dtype=bool)
 
-    def __insert(self, frontier):
-        pass
+    def __contains__(self, key):
+        return self.visited[key.x, key.y]
 
-    def __remove(self, frontier):
-        pass
+    def add(self, key):
+        self.visited[key.x, key.y] = True
 
-    def __init_frontier(self, frontier):
-        pass
+
+class Frontier(object):
+    def __init__(self, item):
+        self.frontier = deque()
+        self.frontier.append(item)
+
+    def insert(self, item):
+        self.frontier.append(item)
+
+    def remove(self):
+        return self.frontier.popleft()
+
+    def is_empty(self):
+        return len(self.frontier) == 0
+
+    def __contains__(self, state):
+        for node in self.frontier:
+            if state == node.state:
+                return True
+
+        return False
+
+
+class BFS(object):
 
     def run(self, problem):
-        """ returns a solution, or failure
-
-        [description]
-        """
-        node = Node(problem.initial_state, 0)
+        node = Node(problem.initial, 0)
         if problem.goal_test(node.state):
             return solution(node)
 
         # a FIFO queue with node as the only element
-        frontier = self.__init_frontier(node)
-        explored = set()
+        frontier = Frontier(node)
+        explored = ExploredSet(problem.dimensions)
 
         while True:
-            if self.__empty(frontier):
-                return -1  # Failure
+            if frontier.is_empty():
+                return []  # Failure
 
             # chooses the shallowest node in frontier
-            node = self.__remove(frontier)
+            node = frontier.remove()
             explored.add(node.state)
             for action in problem.get_actions(node.state):
                 child = child_node(problem, node, action)
@@ -52,8 +84,24 @@ class bfs(object):
                     if problem.goal_test(child.state):
                         return solution(child)
 
-                    frontier = self.__insert(child, frontier)
+                    frontier.insert(child)
 
 
 def main():
+    map_name, map_matrix = read_map('map4.map')
+    print(map_matrix)
+
+    p1 = Point(2, 3)
+    p2 = Point(2, 7)
+    prob = Problem(map_matrix, p1, p2)
+
+    search = BFS()
+    solution = search.run(prob)
+    print(solution)
+    for i, node in enumerate(solution):
+        map_matrix[node.state.x, node.state.y] = str(i)
+
+    print(map_matrix)
     return
+
+main()
