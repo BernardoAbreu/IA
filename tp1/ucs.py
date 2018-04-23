@@ -1,61 +1,78 @@
 from node import Node
+from util import solution
+from util import child_node
+from explored import ExploredSet
+
+import heapq
+
+# from visu import Visu
 
 
-class UCS(object):
+class _Frontier(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, item):
+        self.frontier = []
+        self.insert(item)
 
-    '''
-    function UNIFORM-COST-SEARCH(problem) returns a solution, or failure
-    node ← a node with STATE = problem.INITIAL-STATE, PATH-COST = 0
-    frontier ← a priority queue ordered by PATH-COST,
-                with node as the only element
-    explored ←an empty set
+    def insert(self, item):
+        heapq.heappush(self.frontier, item)
 
-        loop do
-            if EMPTY?( frontier) then return failure
-            node←POP( frontier ) /* chooses the lowest-cost node in frontier */
-            if problem.GOAL-TEST(node.STATE) then return SOLUTION(node)
-            add node.STATE to explored
-            for each action in problem.ACTIONS(node.STATE) do
-                child ←CHILD-NODE(problem, node, action)
-                if child .STATE is not in explored or frontier then
-                    frontier ←INSERT(child , frontier )
-                else if
-                    replace that frontier node with child
-    '''
+    def remove(self):
+        return heapq.heappop(self.frontier)
 
-    def __empty(self, container):
-        return True
+    def is_empty(self):
+        return len(self.frontier) == 0
 
-    def __pop(self, container):
-        return 1
+    def __contains__(self, state):
+        for node in self.frontier:
+            if state == node.state:
+                return True
 
-    def run(self, problem):
-        node = Node()
-        frontier = self.__init_frontier(node)
-        explored = set()
-        while True:
-            if self.__empty(frontier):
-                return -1  # Failure
+        return False
 
-            node = self.__pop(frontier)
-            if problem.goal_test(node.get_state()):
-                return self.__solution(node)
-            explored.add(node.get_state())
-
-            for action in problem.get_actions(node.get_state()):
-                child = self.__child_node(problem, node, action)
-                if child.get_state() not in explored or \
-                   child.get_state() not in frontier:
-                    frontier = self.__insert(child, frontier)
+    def replace_insert(self, item):
+        for i, node in enumerate(self.frontier):
+            if node.state == item.state:
+                if node.path_cost > item.path_cost:
+                    self.frontier[i] = item
+                    heapq.heapify(self.frontier)
                 else:
-                    if child.get_state() in frontier:
-                        # child.STATE is in frontier with higher PATH-COST
-                        if self.__check_path_cost(child.get_path_cost(),
-                                                  child.get_state()):
-                            # replace that frontier node with child
-                            self.__replace(frontier, child)
+                    break
 
-        return
+    def __str__(self):
+        return str(self.frontier)
+
+
+def ucs(problem):
+    # with Visu() as v:
+    # v.init_screen(problem.map)
+
+    node = Node(problem.initial, 0)
+
+    frontier = _Frontier(node)
+    explored = ExploredSet(problem.dimensions)
+
+    # v.update_coord(node.state, 'o')
+
+    while True:
+        if frontier.is_empty():
+            return []  # Failure
+
+        node = frontier.remove()
+        # v.update_coord(node.state, '*')
+
+        if problem.goal_test(node.state):
+            return solution(node)
+
+        explored.add(node.state)
+
+        for action in problem.get_actions(node.state):
+            child = child_node(problem, node, action)
+
+            if child.state in frontier:
+                # if child.STATE is in frontier with higher PATH-COST
+                # then replace frontier node with child
+                frontier.replace_insert(child)
+            elif child.state not in explored:
+                frontier.insert(child)
+                # v.update_coord(child.state, 'o')
