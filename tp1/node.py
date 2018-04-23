@@ -7,19 +7,13 @@ class Node():
         self.path_cost = path_cost
 
     def __str__(self):
-        return '<' + str(self.state.x) + ',' + str(self.state.y) + ',' + \
-               str(self.path_cost) + '>'
+        return '<' + str(self.state) + ', ' + str(self.path_cost) + '>'
 
     def __repr__(self):
         return self.__str__()
 
+    def __lt__(self, other):
+        return self.path_cost < other.path_cost
 
-def solution(node):
-    sol_list = []
-    aux = node
-
-    while aux is not None:
-        sol_list.append(aux)
-        aux = aux.parent
-
-    return sol_list[::-1]
+    def __gt__(self, other):
+        return self.path_cost > other.path_cost
