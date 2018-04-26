@@ -55,7 +55,6 @@ def dfs(problem, limit=-1):
         node, depth = frontier.remove()
 
         if problem.goal_test(node.state):
-            print(depth)
             return solution(node)
 
         explored.add(node.state)
@@ -67,4 +66,3 @@ def dfs(problem, limit=-1):
                     frontier.insert((child, depth + 1))
         else:
             limit_reached = True
-            # explored.remove(node.state)

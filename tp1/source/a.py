@@ -6,6 +6,9 @@ import heapq
 
 # from visu import Visu
 
+_heuristics_dict = {'manhattan': manhattan_distance,
+                    'octile': octile_distance}
+
 
 class _Frontier(object):
 
@@ -29,21 +32,12 @@ class _Frontier(object):
 
         return False
 
-    def replace_insert(self, item):
-        for i, node in enumerate(self.frontier):
-            if node.state == item.state:
-                if node.path_cost > item.path_cost:
-                    self.frontier[i] = item
-                    heapq.heapify(self.frontier)
-                else:
-                    break
-
     def __str__(self):
         return str(self.frontier)
 
 
-def a_star(problem, heuristic='manhattan'):
-    fheur = manhattan_distance if heuristic == 'manhattan' else octile_distance
+def a_star(problem, heuristic='octile'):
+    fheur = _heuristics_dict[heuristic]
     # with Visu() as v:
     # v.init_screen(problem.map)
 
