@@ -17,3 +17,6 @@ class Node():
 
     def __gt__(self, other):
         return self.path_cost > other.path_cost
+
+    def __eq__(self, other):
+        return self.state == other.state

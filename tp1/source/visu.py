@@ -17,7 +17,7 @@ class Visu(object):
     def update_coord(self, coord, s):
         self.mywindow.addstr(coord.x, coord.y, s)
         self.mywindow.refresh()
-        time.sleep(0.3)
+        time.sleep(0.1)
 
     def close(self):
         curses.endwin()

@@ -1,9 +1,9 @@
 import numpy as np
 from bfs import bfs
-from ucs import ucs
-from ids import ids
-from best_first_search import best_first_search
-from a import a_star
+from ucs import UCS
+from ids import IDS
+from best_first_search import BestFirstSearch
+from a import AStar
 from point import Point
 from problem import Problem
 
@@ -22,15 +22,19 @@ def read_map(filename):
 
 
 def main():
-    map_name, map_matrix = read_map('map4.map')
-    print(map_matrix)
+    map_name, map_matrix = read_map('../maps/map1.map')
 
-    initial_point = Point(2, 1)
-    goal_point = Point(2, 5)
+    initial_point = Point(247, 245)
+    goal_point = Point(191, 97)
     prob = Problem(map_matrix, initial_point, goal_point)
+    map_matrix[initial_point.x, initial_point.y] = 'I'
+    map_matrix[goal_point.x, goal_point.y] = 'G'
+    # print(map_matrix)
 
-    solution = a_star(prob)
-
+    # search = AStar('manhattan')
+    search = IDS()
+    # search = UCS()
+    solution = search.run(prob)
     if solution:
         print(solution[0])
         print(solution[-1])
@@ -42,9 +46,11 @@ def main():
         print()
 
     for i, node in enumerate(solution):
-        map_matrix[node.state.x, node.state.y] = str(i)
+        map_matrix[node.state.x, node.state.y] = 'X'
+    print('Expanded states: ' + str(search.get_expanded_states()))
 
-    print(map_matrix)
+    # print(map_matrix)
+    np.savetxt('outmap2', map_matrix, delimiter='', fmt='%s')
     return
 
 
