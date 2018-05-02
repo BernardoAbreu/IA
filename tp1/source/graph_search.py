@@ -53,6 +53,13 @@ class GraphSearch(object):
     def _remove_explored(self, key):
         self.explored[key.x, key.y] = self._EMPTY
 
+    def _add_cost(self, node):
+        if self.costs[node.state.x, node.state.y]:
+            self.costs[node.state.x, node.state.y] = \
+                min(node.path_cost, self.costs[node.state.x, node.state.y])
+        elif node.state != self.problem.initial:
+            self.costs[node.state.x, node.state.y] = node.path_cost
+
     def run(self, problem):
         # self.visu = False
         # if self.visu:
@@ -89,10 +96,7 @@ class GraphSearch(object):
 
             # explored.add(node.state)
             self._add_explored(node.state)
-            if self.costs[node.state.x, node.state.y]:
-                self.costs[node.state.x, node.state.y] = min(node.path_cost, self.costs[node.state.x, node.state.y])
-            elif node.state != problem.initial:
-                self.costs[node.state.x, node.state.y] = node.path_cost
+            self._add_cost(node)
 
             for action in problem.get_actions(node.state):
                 child = child_node(problem, node, action)
