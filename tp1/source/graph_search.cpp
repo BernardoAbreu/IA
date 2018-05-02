@@ -2,12 +2,12 @@
 
 
 
-void Pattern::run__(Problem& problem, std::list<Node>& path){
+void GraphSearch::run__(Problem& problem, std::list<Node>& path){
     this.problem = problem;
     node = Node(problem.initial, 0)
 
     explored = ExploredSet(problem.get_dimensions());
-    frontier = Frontier(problem.get_dimensions());
+    frontier = this.init_frontier(problem.get_dimensions());
     frontier.insert(node);
     this.initialize_costs();
 
