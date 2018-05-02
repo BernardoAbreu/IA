@@ -1,5 +1,5 @@
 
-class Node(){
+class Node{
 private:
     Point state;
     Node *parent;

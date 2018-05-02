@@ -1,5 +1,5 @@
 
-class ExploredSet(){
+class ExploredSet{
 private:
     vector<vector<bool>> visited;
 
