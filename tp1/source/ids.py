@@ -79,22 +79,14 @@ from visu import Visu
 
 
 class IDS(GraphSearch):
-    def _replace_insert_frontier(self, item):
-        for i, node in enumerate(self.frontier):
-            if node.state == item.state:
-                if node.path_cost > item.path_cost:
-                    self.frontier.pop(i)
-                    self.frontier.append(item)
-                else:
-                    break
 
     def _update_frontier(self, child):
         if child.path_cost > self.limit:
             self.limit_reached = True
         elif self.costs[child.state.x, child.state.y] > child.path_cost or \
-                (not self._in_explored(child.state) and
-                    not self._in_frontier(child.state)):
-                self._insert_frontier(child)
+                not (self._in_explored(child.state) or
+                     self._in_frontier(child.state)):
+            self._insert_frontier(child)
 
     def _init_frontier(self):
         self.frontier = deque()

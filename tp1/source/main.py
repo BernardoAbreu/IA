@@ -22,10 +22,13 @@ def read_map(filename):
 
 
 def main():
-    map_name, map_matrix = read_map('../maps/map1.map')
+    # map_name, map_matrix = read_map('../maps/map1.map')
+    map_name, map_matrix = read_map('../maps/map2.map')
 
-    initial_point = Point(247, 245)
-    goal_point = Point(191, 97)
+    # initial_point = Point(247, 245)
+    # goal_point = Point(191, 97)
+    initial_point = Point(29, 21)
+    goal_point = Point(60, 19)
     prob = Problem(map_matrix, initial_point, goal_point)
     map_matrix[initial_point.x, initial_point.y] = 'I'
     map_matrix[goal_point.x, goal_point.y] = 'G'
@@ -39,7 +42,7 @@ def main():
         print(solution[0])
         print(solution[-1])
         print()
-        print(solution)
+        print(' '.join(str(s) for s in solution))
     else:
         print('<' + str(initial_point) + ', 0' + '>')
         print('<' + str(goal_point) + ', inf' + '>')

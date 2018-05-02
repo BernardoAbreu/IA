@@ -27,9 +27,9 @@ class HeuristicSearch(GraphSearch):
         return node
 
     def _replace_insert_frontier(self, item):
-        for i, _, node in enumerate(self.frontier):
+        for i, (_, node) in enumerate(self.frontier):
             if node.state == item.state:
                 if node.path_cost > item.path_cost:
-                    self.frontier[i] = item
+                    self.frontier[i] = (self._heuristic_value(item), item)
                     heapq.heapify(self.frontier)
                 break
