@@ -72,5 +72,13 @@ from heuristic_search import HeuristicSearch
 
 class AStar(HeuristicSearch):
 
+    def _update_frontier(self, child):
+        if self._in_frontier(child.state):
+            # if child.STATE is in frontier with higher PATH-COST
+            # then replace frontier node with child
+            self._replace_insert_frontier(child)
+        elif not self._in_explored(child.state):
+            self._insert_frontier(child)
+
     def _heuristic_value(self, node):
         return self.heuristic(node.state, self.problem.goal) + node.path_cost

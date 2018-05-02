@@ -13,11 +13,6 @@ class HeuristicSearch(GraphSearch):
         self._expanded_states = 0
         self.heuristic = self._heuristics_dict[heuristic]
 
-    def _update_frontier(self, child):
-        if not self._in_explored(child.state) and \
-                not self._in_frontier(child.state):
-            self._insert_frontier(child)
-
     def _heuristic_value(self):
         pass
 
@@ -30,3 +25,11 @@ class HeuristicSearch(GraphSearch):
         _, node = heapq.heappop(self.frontier)
         self.explored[node.state.x, node.state.y] = self._EMPTY
         return node
+
+    def _replace_insert_frontier(self, item):
+        for i, _, node in enumerate(self.frontier):
+            if node.state == item.state:
+                if node.path_cost > item.path_cost:
+                    self.frontier[i] = item
+                    heapq.heapify(self.frontier)
+                break

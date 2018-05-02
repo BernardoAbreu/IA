@@ -67,5 +67,10 @@ from heuristic_search import HeuristicSearch
 
 class BestFirstSearch(HeuristicSearch):
 
+    def _update_frontier(self, child):
+        if not self._in_explored(child.state) and \
+                not self._in_frontier(child.state):
+            self._insert_frontier(child)
+
     def _heuristic_value(self, node):
         return self.heuristic(node.state, self.problem.goal)
