@@ -1,34 +1,38 @@
 #include "problem.h"
 
 
-Problem::Problem(const vector<vector<char>>& area_map, const Point& initial_state, const Point& goal_state){
-    this.map = area_map;
-    this.dimensions = pair<int, int>(area_map.size(), area_map[0].size());
-    this.initial = initial_state;
-    this.goal = goal_state;
+Problem::Problem(const std::vector<std::vector<char>>& area_map, const Point& initial_state, const Point& goal_state){
+    this->map = area_map;
+    this->initial = initial_state;
+    this->goal = goal_state;
 }
 
 
-bool Problem::available(const Point& state, int x, int y){
-    int new_x = state.x + x;
-    int new_y = state.y + y;
+bool available(const Point& state, int x, int y, const std::vector<std::vector<char>>& map){
+    int height = map.size();
+    int width = map[0].size();
+    int new_x = state.get_x() + x;
+    int new_y = state.get_y() + y;
 
     // Check out of bounds
-    if(new_x < 0 || new_x >= this.dimensions.first || new_y < 0 || new_y >= this.dimensions.second) return false;
+    if(new_x < 0 || new_x >= height|| new_y < 0 || new_y >= width) return false;
 
     // Check if new position is blocked
-    if(this.map[new_x][new_y] == '@') return false;
+    if(map[new_x][new_y] == '@') return false;
 
     // Check diagonals
-    if (x != 0 && y != 0 (this.map[state.x][new_y] == '@' || this.map[new_x][state.y] == '@')) return false;
+    if (x != 0 && y != 0 && (map[state.get_x()][new_y] == '@' || map[new_x][state.get_y()] == '@')) return false;
 
     return true;
 }
 
-void Problem::get_actions(Point& state, vector<Point>& actions){
+
+std::vector<Point> Problem::get_actions(const Point& state) const{
+    std::vector<Point> actions;
     for(int i = 0; i < 8; i++){
-        if(this.available(state, directions[0], directions[1])){
-            actions.push_back(Point(directions[0], directions[1]));
+        if(available(state, this->directions[i][0], this->directions[i][1], this->map)){
+            actions.push_back(Point(this->directions[i][0], this->directions[i][1]));
         }
     }
+    return actions;
 }

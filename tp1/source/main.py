@@ -29,12 +29,14 @@ def main():
     # goal_point = Point(191, 97)
     initial_point = Point(29, 21)
     goal_point = Point(60, 19)
+    # goal_point = Point(248, 81)
     prob = Problem(map_matrix, initial_point, goal_point)
     map_matrix[initial_point.x, initial_point.y] = 'I'
     map_matrix[goal_point.x, goal_point.y] = 'G'
     # print(map_matrix)
 
     # search = AStar('manhattan')
+    # search = BestFirstSearch('manhattan')
     search = IDS()
     # search = UCS()
     solution = search.run(prob)

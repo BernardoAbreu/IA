@@ -1,32 +1,32 @@
+#include "util.h"
 
-#include <stdlib.h>
-#include "node.h"
-
-void solution(Node *node, std::list<&Node>& path){
+std::list<Node> solution(Node *node){
+    std::list<Node> path;
     Node *aux = node;
 
     while(aux != NULL){
-        path.push_front(*aux)
+        path.push_front(*aux);
         aux = aux->get_parent();
     }
+    return path;
 }
 
 
 Node child_node(const Problem& problem, Node *parent, Point action){
-    return Node(problem.result(parent.state, action),
-                parent.path_cost + problem.step_cost(parent.state, action),
-                parent,
-                action);
+    return Node(problem.result(parent->get_state(), action),
+                parent->get_path_cost() + problem.step_cost(parent->get_state(), action),
+                action,
+                parent);
 }
 
 
 double manhattan_distance(Point node, Point goal){
-    return abs(node.x - goal.x) + abs(node.y - goal.y);
+    return abs(node.get_x() - goal.get_x()) + abs(node.get_y() - goal.get_y());
 }
 
 
 double octile_distance(Point node, Point goal){
-    double dx = abs(node.x - goal.x);
-    double dy = abs(node.y - goal.y);
-    return max(dx, dy) + 0.5 * min(dx, dy);
+    double dx = abs(node.get_x() - goal.get_x());
+    double dy = abs(node.get_y() - goal.get_y());
+    return std::max(dx, dy) + 0.5 * std::min(dx, dy);
 }

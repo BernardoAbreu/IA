@@ -95,7 +95,8 @@ class IDS(GraphSearch):
         self.limit = 0
         while True:
             self.limit_reached = False
+            print(self.limit)
             result = self._run(problem)
             if result or not self.limit_reached:
                 return result
-            self.limit += 0.5
+            self.limit += 1

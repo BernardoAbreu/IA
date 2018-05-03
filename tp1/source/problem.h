@@ -1,10 +1,16 @@
+#ifndef PROBLEM_H
+#define PROBLEM_H
+
+#include <vector>
+#include "point.h"
+
+
 class Problem{
 private:
-        vector<vector<char>> map;
-        std::pair<int, int> dimensions;
+        std::vector<std::vector<char>> map;
         Point initial;
         Point goal;
-        const int directions[][] = {{0, -1},
+        const int directions[8][2] = {{0, -1},
                                     {0, 1},
                                     {-1, 0},
                                     {1, 0},
@@ -12,19 +18,21 @@ private:
                                     {-1, 1},
                                     {1, -1},
                                     {1, 1},
-                                   }
+                                   };
 
 public:
 
-    Problem(const vector<vector<char>>& area_map, const Point& initial_state, const Point& goal_state);
+    Problem(const std::vector<std::vector<char>>& area_map, const Point& initial_state, const Point& goal_state);
 
-    inline bool goal_test(const Point& state){ return this.goal == state; }
+    inline Point get_initial() const { return this->initial; }
 
-    bool available(const Point& state, int x, int y);
+    inline bool goal_test(const Point& state) const{ return this->goal == state; }
 
-    void get_actions(Point& state, vector<Point>& actions);
+    inline Point result(const Point& parent_state, const Point& action) const {return parent_state + action; }
 
-    inline Point result(const Point& parent_state, const Point& action) {return parent_state + action; }
+    std::vector<Point> get_actions(const Point&) const;
 
-    double step_cost(const Point& parent_state, const Point& action){ return (action.x == 0 or action.y == 0)? 1 : 1.5; }
-}
+    double step_cost(const Point& parent_state, const Point& action) const { return (action.get_x() == 0 || action.get_y() == 0)? 1 : 1.5; }
+};
+
+#endif
