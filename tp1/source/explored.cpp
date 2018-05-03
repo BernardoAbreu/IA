@@ -1,9 +1,11 @@
 #include "explored.h"
 
-Explored::Explored(std::pair<int, int>& dimension){
-	for(int i = 0; i < dimension.first; i++){
-		for(int j = 0; j < dimension.second; j++){
-			this.visited.push_back(0);
-		}
-	}
+ExploredSet::ExploredSet(int height, int width){
+    this->visited.resize(height);
+    for(int i = 0; i < height; i++){
+        this->visited[i].resize(width, false);
+        // for(int j = 0; j < width; j++){
+        //  this->visited[i].push_back(false);
+        // }
+    }
 }

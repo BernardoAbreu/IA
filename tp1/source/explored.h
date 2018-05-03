@@ -1,15 +1,23 @@
+#ifndef EXPLORED_H
+#define EXPLORED_H
+
+#include <vector>
+#include "point.h"
 
 class ExploredSet{
 private:
-    vector<vector<bool>> visited;
+    std::vector<std::vector<bool> > visited;
 
 public:
 
-    ExploredSet(std::pair<int, int>&);
+    ExploredSet(int, int);
 
-    inline bool contains(std::pair<int, int>& key){ return this.visited[key.first][key.second]; }
+    inline bool contains(const Point& key) const{ return this->visited[key.get_x()][key.get_y()]; }
 
-    inline void add(std::pair<int, int>& key){ this.visited[key.first][key.second] = true; }
+    inline void add(const Point& key){ this->visited[key.get_x()][key.get_y()] = true; }
 
-    inline void remove(std::pair<int, int>& key){ this.visited[key.first][key.second] = false; }
-}
+    inline void remove(const Point& key){ this->visited[key.get_x()][key.get_y()] = false; }
+   
+};
+
+#endif

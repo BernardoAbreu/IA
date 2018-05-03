@@ -8,6 +8,8 @@
 class Problem{
 private:
         std::vector<std::vector<char>> map;
+        int height;
+        int width;
         Point initial;
         Point goal;
         const int directions[8][2] = {{0, -1},
@@ -23,6 +25,9 @@ private:
 public:
 
     Problem(const std::vector<std::vector<char>>& area_map, const Point& initial_state, const Point& goal_state);
+
+    inline int get_heigth() const { return this->height; }
+    inline int get_width() const { return this->width; }
 
     inline Point get_initial() const { return this->initial; }
 

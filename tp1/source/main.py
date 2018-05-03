@@ -23,12 +23,21 @@ def read_map(filename):
 
 def main():
     # map_name, map_matrix = read_map('../maps/map1.map')
-    map_name, map_matrix = read_map('../maps/map2.map')
+    map_name, map_matrix = read_map('../maps/map1.map')
 
     # initial_point = Point(247, 245)
     # goal_point = Point(191, 97)
-    initial_point = Point(29, 21)
-    goal_point = Point(60, 19)
+
+    initial_point = Point(2, 2)
+    goal_point = Point(2, 4)
+    initial_point = Point(22, 127)
+    goal_point = Point(60, 95)
+    initial_point = Point(65, 61)
+    goal_point = Point(55, 81)
+    initial_point = Point(66, 62)
+    goal_point = Point(62, 19)
+    # initial_point = Point(29, 21)
+    # goal_point = Point(60, 19)
     # goal_point = Point(248, 81)
     prob = Problem(map_matrix, initial_point, goal_point)
     map_matrix[initial_point.x, initial_point.y] = 'I'

@@ -3,6 +3,8 @@
 
 Problem::Problem(const std::vector<std::vector<char>>& area_map, const Point& initial_state, const Point& goal_state){
     this->map = area_map;
+    this->height = area_map.size();
+    this->width = area_map[0].size();
     this->initial = initial_state;
     this->goal = goal_state;
 }

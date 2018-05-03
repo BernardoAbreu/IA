@@ -99,4 +99,4 @@ class IDS(GraphSearch):
             result = self._run(problem)
             if result or not self.limit_reached:
                 return result
-            self.limit += 1
+            self.limit += 0.5
