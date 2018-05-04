@@ -1,5 +1,4 @@
 import numpy as np
-from bfs import bfs
 from ucs import UCS
 from ids import IDS
 from best_first_search import BestFirstSearch
@@ -21,22 +20,20 @@ def read_map(filename):
     return map_name, matrix
 
 
-def main():
-    # map_name, map_matrix = read_map('../maps/map1.map')
-    map_name, map_matrix = read_map('../maps/map2.map')
+def main(map_file, initial_point, goal_point, algo, heuristic='manhattan'):
+    map_name, map_matrix = read_map(map_file)
 
-    # initial_point = Point(247, 245)
-    # goal_point = Point(191, 97)
-    initial_point = Point(29, 21)
-    goal_point = Point(60, 19)
     prob = Problem(map_matrix, initial_point, goal_point)
-    map_matrix[initial_point.x, initial_point.y] = 'I'
-    map_matrix[goal_point.x, goal_point.y] = 'G'
-    # print(map_matrix)
 
-    # search = AStar('manhattan')
-    search = IDS()
-    # search = UCS()
+    if algo == 'astar':
+        search = AStar(heuristic)
+    elif algo == 'best_first_search':
+        search = BestFirstSearch('manhattan')
+    elif algo == 'ids':
+        search = IDS()
+    else:
+        search = UCS()
+
     solution = search.run(prob)
     if solution:
         print(solution[0])
@@ -58,4 +55,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    map_file = '../maps/map1.map'
+    initial_point = Point(29, 21)
+    goal_point = Point(60, 19)
+    main(map_file, initial_point, goal_point, 'ids')

@@ -9,8 +9,8 @@ class ExploredSet(object):
     def __contains__(self, key):
         return self.visited[key.x, key.y]
 
-    def add(self, key):
-        self.visited[key.x, key.y] = True
+    def add(self, node):
+        self.visited[node.state.x, node.state.y] = True
 
     def remove(self, key):
         self.visited[key.x, key.y] = False

@@ -1,4 +1,4 @@
-import heapq
+from priority_frontier import PriorityFrontier
 from util import manhattan_distance
 from util import octile_distance
 from graph_search import GraphSearch
@@ -16,20 +16,6 @@ class HeuristicSearch(GraphSearch):
     def _heuristic_value(self):
         pass
 
-    def _insert_frontier(self, node):
-        self.explored[node.state.x, node.state.y] = self._FRONTIER
-        item = (self._heuristic_value(node), node)
-        heapq.heappush(self.frontier, item)
-
-    def _remove_frontier(self):
-        _, node = heapq.heappop(self.frontier)
-        self.explored[node.state.x, node.state.y] = self._EMPTY
-        return node
-
-    def _replace_insert_frontier(self, item):
-        for i, (_, node) in enumerate(self.frontier):
-            if node.state == item.state:
-                if node.path_cost > item.path_cost:
-                    self.frontier[i] = (self._heuristic_value(item), item)
-                    heapq.heapify(self.frontier)
-                break
+    def _init_frontier(self, dimensions, node):
+        self.frontier = PriorityFrontier(dimensions)
+        self.frontier.insert((self._heuristic_value(node), node))
