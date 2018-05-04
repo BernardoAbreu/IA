@@ -58,7 +58,26 @@ def main(map_file, initial_point, goal_point, algo, heuristic='manhattan'):
 
 
 if __name__ == '__main__':
-    map_file = '../maps/map2.map'
-    initial_point = Point(1, 1)
-    goal_point = Point(1, 1)
-    main(map_file, initial_point, goal_point, 'ucs')
+        parser = argparse.ArgumentParser()
+    parser.add_argument('-f', '--file', required=True,
+                        help='Input file.')
+    parser.add_argument('-ix', '--initial_x', type=int, required=True,
+                        help='X of the initial point.')
+    parser.add_argument('-iy', '--initial_y', type=int, required=True,
+                        help='Y of the initial point.')
+    parser.add_argument('-fx', '--final_x', type=int, required=True,
+                        help='X of the final point.')
+    parser.add_argument('-fy', '--final_y', type=int, required=True,
+                        help='Y of the final point.')
+    parser.add_argument('-a', '--algorithm', type=str, default='ucs',
+                        help='Search algorithm to be used.')
+    parser.add_argument('-h', '--heuristic', type=float, default='manhattan',
+                        help='Heuristic function for the search algorithm.')
+
+    args = parser.parse_args()
+    print(args)
+
+    map_file = args.file
+    initial_point = Point(args.initial_x, args.initial_y)
+    goal_point = Point(args.final_x, args.final_y)
+    main(map_file, initial_point, goal_point, args.algorithm, args.heuristic)
