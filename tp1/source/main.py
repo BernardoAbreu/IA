@@ -34,7 +34,11 @@ def main(map_file, initial_point, goal_point, algo, heuristic='manhattan'):
     else:
         search = UCS()
 
-    solution = search.run(prob)
+    if map_matrix[initial_point.x, initial_point.y] != '@':
+        solution = search.run(prob)
+    else:
+        solution = []
+
     if solution:
         print(solution[0])
         print(solution[-1])
@@ -45,17 +49,16 @@ def main(map_file, initial_point, goal_point, algo, heuristic='manhattan'):
         print('<' + str(goal_point) + ', inf' + '>')
         print()
 
-    for i, node in enumerate(solution):
-        map_matrix[node.state.x, node.state.y] = 'X'
     print('Expanded states: ' + str(search.get_expanded_states()))
 
-    # print(map_matrix)
-    np.savetxt('outmap2', map_matrix, delimiter='', fmt='%s')
+    for i, node in enumerate(solution):
+        map_matrix[node.state.x, node.state.y] = 'X'
+    np.savetxt('outputmap', map_matrix, delimiter='', fmt='%s')
     return
 
 
 if __name__ == '__main__':
-    map_file = '../maps/map1.map'
-    initial_point = Point(29, 21)
-    goal_point = Point(60, 19)
-    main(map_file, initial_point, goal_point, 'ids')
+    map_file = '../maps/map2.map'
+    initial_point = Point(1, 1)
+    goal_point = Point(1, 1)
+    main(map_file, initial_point, goal_point, 'ucs')
