@@ -12,9 +12,7 @@ Node::Node(const Point& state, double path_cost, const Point& action, Node* pare
     }
 
     this->action = action;
-    // std::cout << action << ' ' << this->action << std::endl;
     this->path_cost = path_cost;
-    // std::cout << state << ' ' << *(this->parent) << std::endl;
 }
 
 Node::Node(const Point& state, double path_cost){

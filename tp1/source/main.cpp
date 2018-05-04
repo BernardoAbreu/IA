@@ -9,7 +9,6 @@
 
 using namespace std;
 
- 
 
 class IDS{
 
@@ -90,14 +89,11 @@ public:
         int y = state.get_y();
         // cout << 1 << endl;
         if(child.get_path_cost() > this->limit){
-            // cout << "limit" << endl;
             this->limit_reached = true;
         }
         else if((this->explored[x][y] > child.get_path_cost()) || !(this->in_explored(state) || this->in_frontier(state))){
-            // cout << 2 << endl;
             this->insert_frontier(child);
         }
-        // cout << 3 << endl;
     }
 
 
@@ -126,30 +122,10 @@ public:
                 return result;
             }
 
-            // cout << "Frontier: ";
-            // print(this->frontier);
-            // cout << endl;
-
-            // cout << this->frontier.top();
-            // if(this->frontier.top().get_parent() != NULL){
-            //     cout << ' ' << *(this->frontier.top().get_parent());
-            // }
-            // cout << endl;
-
-
             Node node = this->remove_frontier();
-            // cout << "Removed: " << node;
-            // if(node.get_parent() != NULL){
-            //     cout << ' ' << *(node.get_parent());
-            // }
-            // cout << endl;
             this->expanded_states++;
 
             if (problem.goal_test(node.get_state())){
-                // cout << "Yes" << endl;
-                // result.push_front(node);
-                // return result;
-                // cout << node << ' ' << *(node.get_parent()) << endl;
                 return solution(&node);
             }
 
@@ -157,16 +133,11 @@ public:
 
 
             for (auto action : problem.get_actions(node.get_state())){
-                // cout << "Action1: " << action << endl;
                 Node child = child_node(problem, &node, action);
-                // cout << "Action2: " << child.action << endl;
-                // cout << "HI " << child << ' ' << *(child.get_parent()) << endl;
                 this->update_frontier(child);
             }
-            // cout << endl;
         }
 
-        return result;
     }
 
     std::list<Node> run(const Problem& problem){
@@ -179,14 +150,11 @@ public:
             this->limit_reached = false;
             cout << "depth: " << this->limit << endl;
             result = this->_run(problem);
-            // cout << "I'm back" << endl;
             if(!result.empty() || !limit_reached){
-                // cout << "bad" << endl;
                 return result;
             }
             this->limit += 0.5;
         }
-        return result;
     }
 
 };
