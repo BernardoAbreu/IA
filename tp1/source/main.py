@@ -2,7 +2,7 @@ import numpy as np
 from ucs import UCS
 from ids import IDS
 from best_first_search import BestFirstSearch
-from a import AStar
+from a_star import AStar
 from point import Point
 from problem import Problem
 
