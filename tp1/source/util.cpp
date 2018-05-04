@@ -1,12 +1,14 @@
 #include "util.h"
-
+#include <iostream>
 std::list<Node> solution(Node *node){
     std::list<Node> path;
     Node *aux = node;
-
+    // std::cout << *aux << ' ' << *(aux->get_parent()) << std::endl;
     while(aux != NULL){
         path.push_front(*aux);
         aux = aux->get_parent();
+        // std::cout << aux->action << std::endl;
+        // std::cout << "Parent: " << *aux << std::endl;
     }
     return path;
 }
