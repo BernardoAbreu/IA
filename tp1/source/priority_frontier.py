@@ -5,7 +5,7 @@ import heapq
 class PriorityFrontier(Frontier):
     def insert(self, item):
         heapq.heappush(self.frontier, item)
-        self._frontier_hash.add(item)
+        self._frontier_hash.add(item[1])
 
     def remove(self):
         _, node = heapq.heappop(self.frontier)
