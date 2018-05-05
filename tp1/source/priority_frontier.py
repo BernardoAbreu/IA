@@ -5,11 +5,11 @@ import heapq
 class PriorityFrontier(Frontier):
     def insert(self, item):
         heapq.heappush(self.frontier, item)
-        self._insert_frontier_hash(item[1].state)
+        self._frontier_hash.add(item)
 
     def remove(self):
         _, node = heapq.heappop(self.frontier)
-        self._remove_frontier_hash(node.state)
+        self._frontier_hash.remove(node)
         return node
 
     # if child.STATE is in frontier with higher PATH-COST

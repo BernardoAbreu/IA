@@ -12,5 +12,5 @@ class ExploredSet(object):
     def add(self, node):
         self.visited[node.state.x, node.state.y] = True
 
-    def remove(self, key):
-        self.visited[key.x, key.y] = False
+    def remove(self, node):
+        self.visited[node.state.x, node.state.y] = False
