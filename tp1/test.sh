@@ -16,7 +16,7 @@ elif [ $HEURISTIC == 2 ]; then
 fi
 
 
-echo $$ > "${BASE}/norun_${HOST}.pid"
+echo $$ >> "${BASE}/norun_${HOST}.pid"
 
 
 mkdir -p "output/${MAP}/${TYPE}/stats/"

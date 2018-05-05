@@ -19,7 +19,7 @@ class GraphSearch(object):
     def _init_explored(self, dimensions):
         self.explored = ExploredSet(dimensions)
 
-    def _update_frontier(self, child, explored):
+    def _update_frontier(self, child):
         if not (child.state in self.explored or child.state in self.frontier):
             self.frontier.insert(child)
 
