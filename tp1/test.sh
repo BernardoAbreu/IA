@@ -1,5 +1,8 @@
 #!/bin/bash
 
+BASE=$HOME'/IA/tp1'
+HOST=$(hostname)
+
 INPUT_FILE=$1
 
 MAP=$2
@@ -12,11 +15,16 @@ elif [ $HEURISTIC == 2 ]; then
 	HEURISTIC=octile
 fi
 
+
+echo $$ > "${BASE}/norun_${HOST}.pid"
+
+
 mkdir -p "output/${MAP}/${TYPE}/stats/"
 mkdir -p "output/${MAP}/${TYPE}/out/"
 
-
 while IFS=' ', read -r IX IY FX FY
 do
-	python3 ./source/main.py -f $MAP -ix $IX -iy $IY -fx $FX -fy $FY -a $TYPE -he $HEURISTIC -s "output/${MAP}/${TYPE}/stats/${TYPE}_${IX}_${IY}_${FX}_${FY}_${HEURISTIC}_stats" > "output/${MAP}/${TYPE}/out/${TYPE}_${IX}_${IY}_${FX}_${FY}_${HEURISTIC}_out"
+	python3 $BASE/source/main.py -f $MAP -ix $IX -iy $IY -fx $FX -fy $FY -a $TYPE -he $HEURISTIC -s "output/${MAP}/${TYPE}/stats/${TYPE}_${IX}_${IY}_${FX}_${FY}_${HEURISTIC}_stats" > "output/${MAP}/${TYPE}/out/${TYPE}_${IX}_${IY}_${FX}_${FY}_${HEURISTIC}_out"
 done < "${INPUT_FILE}"
+
+rm "${BASE}/norun_${HOST}.pid"
