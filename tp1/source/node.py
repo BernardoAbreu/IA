@@ -7,7 +7,7 @@ class Node():
         self.path_cost = path_cost
 
     def __str__(self):
-        return '<' + str(self.state) + ', ' + str(self.path_cost) + '>'
+        return '<' + str(self.state) + ', ' + '%.1f' % self.path_cost + '>'
 
     def __repr__(self):
         return self.__str__()
