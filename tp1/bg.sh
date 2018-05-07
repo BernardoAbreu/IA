@@ -9,4 +9,4 @@ IY=$3
 FX=$4
 FY=$5
 
-python3 ./source/main.py -f $MAP -ix $IX -iy $IY -fx $FX -fy $FY -a bg	
+python3 ./source/main.py -f $MAP -ix $IX -iy $IY -fx $FX -fy $FY -a bg -he manhattan
