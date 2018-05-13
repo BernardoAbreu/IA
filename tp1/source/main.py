@@ -48,7 +48,7 @@ def main(map_file, initial_point, goal_point, algo, heuristic='manhattan',
         print()
         print(' '.join(str(s) for s in solution))
     else:
-        print('<' + str(initial_point) + ', 0' + '>')
+        print('<' + str(initial_point) + ', 0.0' + '>')
         print('<' + str(goal_point) + ', inf' + '>')
         print()
 
