@@ -1,0 +1,135 @@
+Os algoritmos de busca foram implementados utilizando a linguagem \textit{Python 3}.
+Foi criada uma classe \textit{GraphSearch} para implementar o algoritmo de busca em grafo básico, apresentado por~\cite{russell2010artificial}. Cada algoritmo a ser implementado no trabalho, herda da classe \textit{GraphSearch} e implementa as funções necessárias para executar o algoritmo de busca.
+
+% \begin{algorithm}
+% \caption{Função de busca em grafo}\label{alg:graph_search}
+% \begin{algorithmic}[1]
+% \Function{GRAPH\_SEARCH}{$problem$}
+%   \State $node \gets problem.$INITIAL\_STATE
+%   \State $frontier \gets$ \Call{INIT\_FRONTIER}{{}}\label{call:init_frontier}
+%   \State $frontier \gets$ \Call{INSERT}{$frontier, node$}
+
+%   \State $explored\gets \emptyset$
+%   \Loop
+%     \If {\Call{EMPTY?}{$frontier$}}
+%         \State \textbf{return} FAILURE
+%     \EndIf
+
+%     \State $frontier, node \gets$ \Call{REMOVE}{$frontier$}
+
+%     \If {\Call{GOAL?}{$problem, node$}}
+%         \State \textbf{return} \Call{SOLUTION}{$node$}
+%     \EndIf
+
+%     \State $explored \gets explored \cup \{node\}$
+
+%     \ForAll{$action \in $ \Call{GET\_ACTIONS}{$problem,node$}}
+%         \State $child \gets $ \Call{CHILD\_NODE}{$problem, node, action$}
+%         \State $frontier \gets $ \Call{UPDATE\_FRONTIER}{$child, frontier, explored$}
+%     \EndFor
+%   \EndLoop\label{searchloop}
+% \EndFunction
+% \end{algorithmic}
+% \end{algorithm}
+
+% A função \textit{GRAPH\_SEARCH} implementa o comportamento básico de todas os algoritmos de busca. As particularidades da implementação de cada algoritmo se referem ao modo como a fronteira será gerenciada em cada algoritmo. Algumas das funções chamadas nesse algoritmo são as seguintes:
+
+% \begin{description}
+% \item[INIT\_FRONTIER] Inicializa a fronteira com a estrutura apropriada para o algoritmo a ser utilizado.
+% \item[GOAL?] Verifica se o nó corresponde ao objetivo.
+% \item[GET\_ACTIONS] Retorna uma lista de ações válidas para o nó.
+% \item[CHILD\_NODE] Cria um novo nó a partir de uma ação.
+% \item[UPDATE\_FRONTIER] Atualiza a fronteira de acordo com o tratamento necessário para o algoritmo.
+% \end{description}
+
+\subsection{Estruturas}
+\subsubsection{Conjunto de estados explorados}
+O algoritmo de busca em grafos precisa manter um conjuntos de nós já visitados para que os mesmos não sejam repetidos. Esse conjunto é o conjunto \textit{explorado}. Uma vez que cada estado do problema é representado por uma posição no mapa, ou seja, um par de coordenadas (X,Y), é possível criar uma tabela \textit{hash} com acesso O(1) para guardar quais estados já foram visitados. Essa tabela é implementada por meio de uma matriz booleana, onde \textit{true} indica que o estado já foi visitado e \textit{false} o contrário.
+
+% \subsubsection{Classe \textit{Problem}}
+% Foi implementada uma classe \textit{Problem} para representar o problema. Essa classe guarda as informações sobre o estado inicial, o estado objetivo e o mapa onde a busca ocorre. Além disso, ela possui funções para retornar as ações válidas a partir de um estado, para gerar um novo estado a partir de uma ação e para testar se um estado é a solução.
+
+% \subsubsection{Classe \textit{Node}}
+% Um nó de busca também é implementado através de uma classe. Essa classe guarda informações sobre o estado do nó, o nó que gerou esse estado, o custo total do caminho encontrado até o momento e a ação que levou a esse estado. A partir dessa classe é possível reconstruir o caminho encontrado para a solução.
+
+\subsubsection{Fronteira}
+Foram criadas duas classes para a fronteira. A primeira classe, \textit{Frontier}, implementa a fronteira utilizando uma pilha ou uma lista, selecionável por meio de um parâmetro. Existem funções para inserir e retirar elementos da fronteira, verificar se a mesma está vazia e verificar se um certo elemento se encontra nela. Além disso, existe uma função para substituir um nó presente na fronteira por um nó com o mesmo estado, caso o novo possua um custo de caminho menor. Para verificar se um elemento já se encontra na fronteira, foi utilizada a classe \textit{ExploredSet}, de forma que uma matriz booleana é usada para verificar a presença de um elemento em O(1).
+
+A segunda classe é a \textit{PriorityFrontier}. Ela reimplementa as funções de inserir, remover e substituir para utilizar uma fila de prioridades. As funções de inserir e substituir recebem uma tupla de (prioridade, nó) nessa classe.
+
+\subsection{Busca de aprofundamento iterativa - IDS}
+O algoritmo IDS consiste em chamar o método de busca DLS(\textit{Depth Limited Search}) diversas vezes, aumentado iterativamente o limite de profundidade para a nova execução, até que uma solução é encontrada ou o grafo inteiro é percorrido. A profundidade considerada para esse algoritmo foi o custo do caminho, e não a aresta do grafo. Dessa forma o limite é aumentado com um passo de 0.5, e não de 1.
+
+O algoritmo de DLS implementado consiste numa adaptação do algoritmo de busca em grafos apresentado por~\cite{russell2010artificial}. A estrutura de fronteira utilizada no algoritmo é uma pilha, implementada por meio da classe \textit{Frontier}. Além disso, o método de atualização da fronteira, mostrado pelo algoritmo~\ref{alg:update_frontier_ids}, é um pouco diferente. Caso o custo do caminho para o nó que acabou de ser gerado seja maior do que o limite, é indicado que o limite foi atingido e mais nada é feito. Caso o estado do nó não esteja presente na fronteira, ou no conjunto de explorados, o mesmo é adicionado a fronteira.
+
+A terceira condição da função \textit{UPDATE\_FRONTIER}, indicada na linha~\ref{ids:cost}, existe pois esse algoritmo consiste em uma busca em profundidade com um conjunto de nós visitados. Dessa forma, um nó pode ser visitado primeiro por um caminho mais longo, e depois por um caminho mais curto, o que deve ser levado em consideração pelo algoritmo para se obter o caminho correto. Portanto, o conjunto de explorados utilizado nesse algoritmo é um pouco diferente do tradicional. A classe \textit{ExploredCosts} foi criada, herdando de de \textit{ExploredSet}, de forma a guardar o custo dos caminhos explorados, ao invés de um valor booleano. Assim, a terceira condição verifica se o nó gerado já foi explorado com um caminho maior do que o atual, para que se possa repetir a busca caso o novo caminho seja melhor.
+
+
+\begin{algorithm}
+\caption{Atualiza a fronteira do IDS}\label{alg:update_frontier_ids}
+\begin{algorithmic}[1]
+\Function{UPDATE\_FRONTIER}{$child, frontier, explored, limit$}
+	\If {$child.$PATH\_COST $> limit$}
+    	\State $limit\_reached \gets true$
+	\ElsIf{$child.$STATE $\notin frontier$ \textbf{and} $child.$STATE $ \notin explored$}
+    	\State $frontier \gets$ \Call{INSERT}{$frontier, child$}
+    \ElsIf {\Call{GET\_COST}{$explored, child.$STATE} $> child.$PATH\_COST}\label{ids:cost}
+    	\State $frontier \gets$ \Call{INSERT}{$frontier, child$}
+    \EndIf
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+
+\subsection{Busca de custo uniforme - UCS}
+A fronteira utilizada no algoritmo UCS é uma fila de prioridades, cuja valor de prioridade é o valor do custo do caminho até o nó. A fronteira é atualizada em dois casos distintos. No primeiro caso, caso o estado do nó gerado já esteja presente na fronteira com um custo de caminho maior do que o novo, o mais recente substitui o nó na fronteira. O segundo caso ocorre quando o novo nó não se encontra na fronteira ou no conjunto de explorados, resultando na sua inserção na fronteira.
+
+% \begin{algorithm}
+% \caption{Atualiza a fronteira do UCS}\label{alg:update_frontier_ucs}
+% \begin{algorithmic}[1]
+% \Function{UPDATE\_FRONTIER}{$child, frontier, explored$}
+%     \If {$child.$STATE $\in frontier$}
+%         \State $frontier \gets$ \Call{REPLACE}{$frontier,(child.$PATH\_COST$, child)$}
+%     \ElsIf{$child.$STATE $ \notin explored$}
+%     	\State $frontier \gets$ \Call{INSERT}{$frontier, (child.$PATH\_COST$, child)$}
+%     \EndIf
+% \EndFunction
+% \end{algorithmic}
+% \end{algorithm}
+
+
+\subsection{Algoritmos de busca com informação}
+Para os algoritmos de busca com informação, a busca gulosa e A*, foi implementada uma classe \textit{HeuristicSearch} que herda de \textit{GraphSearch}. Essa classe adiciona a possibilidade de se escolher uma heurística e define a fronteira como uma fila de prioridades.
+
+\subsubsection{Busca gulosa de melhor escolha - \textit{Best first Search}}
+O algoritmo de busca gulosa utiliza uma fila de prioridades como sua fronteira, na qual o valor da heurística é utilizado como valor de prioridade. A atualização da fronteira é feita de forma que um novo nó é inserido na fronteira caso já não se encontre na mesma ou no conjunto de estados explorados.
+
+\subsubsection{A*}
+O valor de prioridade utilizado no algoritmo A* é o valor da heurística, chamado de $h$, somado com o custo do caminho para o nó, chamado de $g$, de forma que $f = h + g$. A atualização da fronteira segue os mesmos casos do algoritmo UCS. Um nó gerado substitui o nó na fronteira caso o segundo possua um valor de $f$ maior do que o primeiro, e um nó gerado é inserido na fronteira caso não se encontre na mesma ou no conjunto de nós explorados.
+
+\subsubsection{Heurísticas}
+Duas heurísticas possíveis foram implementadas, a \textit{distância Manhattan}~(\ref{eq:manhattan}) e a \textit{distância octile}~(\ref{eq:octile}). Entre essas heurísticas, a única admissível e consistente é a \textit{distância octile}.
+
+\begin{equation}\label{eq:manhattan}
+\begin{matrix}
+dx = abs(node.x - goal.x)\\
+dy = abs(node.y - goal.y)\\
+h(n) = (dx + dy)\\
+\end{matrix}
+\end{equation}
+
+\begin{equation}\label{eq:octile}
+\begin{matrix}
+dx = abs(node.x - goal.x)\\
+dy = abs(node.y - goal.y)\\
+h(n) = max(dx,dy) + 0.5 \times min(dx,dy)
+\end{matrix}
+\end{equation}
+
+A \textit{distância Manhattan} não é capaz de diferenciar o custo de se movimentar na diagonal dos outros custos, assim, o valor de custo retornado pela heurística para se andar para um quadrado diretamente na diagonal é $2$, enquanto o valor real é $1.5$. Para uma heurística ser admissível, é necessário que seu valor seja menor ou igual ao valor real, o que não acontece nesse caso.
+
+A \textit{distância octile} leva em consideração os custos das diagonais. O número de passos diagonais em um caminho livre é igual a $min(dx,dy)$. O termo ($0.5\times min(dx,dy)$) pode ser reescrito como ($1.5 \times min(dx,dy) - 1 \times min(dx,dy)$), que corresponde ao números de passos na diagonal que se deve dar, multiplicado pelo custo da diagonal, menos o número de passos que não se está dando na direção de $max(dx,dy)$, por se estar usando a diagonal.
+
+Com um caminho livre, o custo dado para se caminha na horizontal ou vertical é igual ao custo ótimo, uma vez que o valor de min(dx,dy) é 0, e o valor de max(dx,dy) é o próprio valor da distância. Ao se caminhar para o quadrado exatamente na diagonal, o custo total será $1.5$, que corresponde à distância ótima.
+
+Uma heurística é consistente se, para um nó \textit{n} e os seus sucessores \textit{n'} gerados por uma ação \textit{a}, o custo estimado de atingir o objetivo a partir de \textit{n} não é maior que o custo de chegar a \textit{n'} somado ao custo estimado de \textit{n'} para o objetivo~\cite{russell2010artificial}. O custo estimado de se atingir um nó com a heurística de \textit{distância octile} corresponde ao custo ótimo possível dentro de um mapa com caminho livre. Logo o custo real não é menor do que o custo estimado.

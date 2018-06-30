@@ -1,0 +1,80 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% How to use writeLaTeX: 
+%
+% You edit the source code here on the left, and the preview on the
+% right shows you the result within a few seconds.
+%
+% Bookmark this page and share the URL with your co-authors. They can
+% edit at the same time!
+%
+% You can upload figures, bibliographies, custom classes and
+% styles using the files menu.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt]{article}
+
+\usepackage{sbc-template}
+\usepackage{amsfonts}
+\usepackage{graphicx,url}
+\usepackage{float}
+%\usepackage[brazil]{babel}   
+\usepackage[utf8]{inputenc}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+\usepackage{listings}
+
+\usepackage{amsmath}
+\usepackage[table]{xcolor}
+\usepackage{float}
+\usepackage{adjustbox}
+
+\sloppy
+
+\title{Trabalho Prático 1: Busca em Mapas}
+
+\author{Bernardo de Almeida Abreu\inst{1}}
+
+
+\address{Departamento de Ciência da Computação -- Universidade Federal de Minas Gerais
+	\\Disciplina: DCC028 - Inteligência Artificial 2018/1
+  \email{bernardoabreu@dcc.ufmg.br}
+}
+
+\begin{document} 
+
+\lstset{
+    columns=fullflexible,
+    keepspaces=true,
+    literate={-}{-}1,
+    framexleftmargin=2.5mm,
+	breaklines=true,
+    keepspaces=true,
+    prebreak=\textbackslash
+}
+
+\maketitle
+
+
+\section{Introdução}
+\input{source/introducao}
+
+
+\section{Implementação}
+\input{source/implementacao}
+
+
+\section{Experimentos}
+\input{source/experimentos}
+
+
+\section{Conclusão}
+\input{source/conclusao}
+
+
+\section{Bibliografia}
+\bibliographystyle{sbc}
+\bibliography{sbc-template}
+
+\end{document}
