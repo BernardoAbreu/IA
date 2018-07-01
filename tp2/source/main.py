@@ -5,6 +5,10 @@ from qlearning import QLearning
 import numpy as np
 
 
+d = ('direita', 'esquerda', 'acima', 'abaixo')
+a = ('>', '<', '^', 'v')
+
+
 def read_map(filename, skip=0):
     with open(filename, 'r') as f:
         for _ in range(skip):
@@ -13,16 +17,13 @@ def read_map(filename, skip=0):
         return [list(line.rstrip()) for line in f]
 
 
-d = ('direita', 'esquerda', 'acima', 'abaixo')
-a = ('>', '<', '^', 'v')
-
-
-def print_q(maze, q):
-    for i, line in enumerate(maze):
-        for j, element in enumerate(line):
-            if element != '#':
-                for action, q_value in zip(d, q[i][j]):
-                    print('%d,%d,%s,%f' % (i, j, action, q_value))
+def save_q(maze, q):
+    with open('q.txt', 'w') as f:
+        for i, line in enumerate(maze):
+            for j, element in enumerate(line):
+                if element == '-':
+                    for action, q_value in zip(d, q[i][j]):
+                        f.write('%d,%d,%s,%f\n' % (i, j, action, q_value))
 
 
 def main(map_file, alpha, discount, n_iterations):
@@ -35,21 +36,16 @@ def main(map_file, alpha, discount, n_iterations):
     qlearn = QLearning(maze, alpha, discount, n_iterations, seed=1)
     q = qlearn.run()
 
-    print_q(maze, q)
-    # for line in q:
-    #     for element in line:
-    #         print(','.join(map(str, element)) + ' ', end='')
-    #     print()
+    save_q(maze, q)
 
-    print()
-
-    for i, line in enumerate(maze):
-        for j, element in enumerate(line):
-            if element == '-':
-                print(a[np.argmax(q[i][j])], end='')
-            else:
-                print(element, end='')
-        print()
+    with open('pi.txt', 'w') as f:
+        for i, line in enumerate(maze):
+            for j, element in enumerate(line):
+                if element == '-':
+                    f.write(a[np.argmax(q[i][j])])
+                else:
+                    f.write(element)
+            f.write('\n')
     return
 
 

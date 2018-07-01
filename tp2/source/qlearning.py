@@ -27,7 +27,7 @@ class QLearning(object):
             for j, element in enumerate(line):
                 if element == '0':
                     cur_line.append([10.0, 10.0, 10.0, 10.0])
-                if element == '&':
+                elif element == '&':
                     cur_line.append([-10.0, -10.0, -10.0, -10.0])
                 else:
                     cur_line.append([.0, .0, .0, .0])
