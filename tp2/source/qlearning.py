@@ -2,50 +2,43 @@ import random
 
 
 class QLearning(object):
-    def __init__(self, maze, alpha, discount, iterations, seed=None):
+    def __init__(self, maze, alpha, discount, iterations,
+                 epsilon=0.2, seed=None):
         self.__alpha = alpha
         self.__discount = discount
         self.__iterations = iterations
         self.__maze = maze
         self.__actions = ((0, 1), (0, -1), (-1, 0), (1, 0))
-        self.__epsilon = 0.2
+        self.__epsilon = epsilon
+
+        self.__q = self.__initialize_q()
+        self.__valid_states = self.__initialize_valid_states()
+
         random.seed(seed)
 
-        # self.__q = [[[.0, .0, .0, .0] for e in line] for line in maze]
-        self.__initialize_q()
-        self.__valid_states = []
-
-        for i, line in enumerate(maze):
-            for j, element in enumerate(line):
-                if element == '-':
-                    self.__valid_states.append((i, j))
-
     def __initialize_q(self):
-        self.__q = []
-        for i, line in enumerate(self.__maze):
-            cur_line = []
-            for j, element in enumerate(line):
-                if element == '0':
-                    cur_line.append([10.0, 10.0, 10.0, 10.0])
-                elif element == '&':
-                    cur_line.append([-10.0, -10.0, -10.0, -10.0])
-                else:
-                    cur_line.append([.0, .0, .0, .0])
-            self.__q.append(cur_line)
+        r = {'0': [10.], '&': [-10.], '-': [0.], '#': [0.]}
+
+        rows, cols = len(self.__maze), len(self.__maze[0])
+        return [[r[self.__maze[i][j]] * 4 for j in range(cols)]
+                for i in range(rows)]
+
+    def __initialize_valid_states(self):
+        rows, cols = len(self.__maze), len(self.__maze[0])
+        return [(i, j) for i in range(rows) for j in range(cols)
+                if self.__maze[i][j] == '-']
 
     def __is_terminal(self, s):
         return self.__maze[s[0]][s[1]] in ('0', '&')
 
     def __get_reward(self, s):
         position = self.__maze[s[0]][s[1]]
-        return -1 if position == '-' else (10 if position == '0' else -10)
+        return -1. if position == '-' else (10. if position == '0' else -10.)
 
     def __initialize_state(self):
-        # return (1, 3)
         return random.choice(self.__valid_states)
 
     def __choose_action(self, s):
-        # return 0
         if random.random() < self.__epsilon:
             return random.randrange(len(self.__actions))
         else:
@@ -71,8 +64,6 @@ class QLearning(object):
         while True:
             state = self.__initialize_state()
             while not self.__is_terminal(state):
-            # while True:
-                # print_q(self.__q)
                 if iteration >= self.__iterations:
                     return self.__q
 
@@ -80,8 +71,6 @@ class QLearning(object):
                 next_state = self.__take_action(state, action)
                 self.__update_q(state, action, next_state)
                 iteration += 1
-                # if self.__is_terminal(state):
-                    # break
                 state = next_state
 
             episode += 1
