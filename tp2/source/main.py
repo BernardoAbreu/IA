@@ -43,10 +43,12 @@ def main(args):
     discount = args.discount
     n_iterations = args.iterations
     seed = args.seed
+    epsilon = args.epislon if args.epsilon else 0.2
 
     maze = read_map(map_file, 1)
 
-    qlearn = QLearning(maze, alpha, discount, n_iterations, seed=seed)
+    qlearn = QLearning(maze, alpha, discount, n_iterations, seed=seed,
+                       epsilon=epsilon)
     q = qlearn.run()
 
     save_q(maze, q)
@@ -65,6 +67,8 @@ if __name__ == '__main__':
                         help='Discount factor.')
     parser.add_argument('-n', '--iterations', type=int, required=True,
                         help='iterations to be run.')
+    parser.add_argument('-e', '--epsilon', type=float,
+                        help='Epsilon value for epsilon-greedy.')
     parser.add_argument('--seed', type=int, default=None,
                         help='Seed for random number generator')
     parser.add_argument('--stats',

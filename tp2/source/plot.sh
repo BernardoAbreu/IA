@@ -13,7 +13,6 @@ USE_ALL=true
 DIRS=0
 
 DATA_SETS=(pacmaze-01-tiny.txt pacmaze-02-mid-sparse.txt pacmaze-03-tricky.txt)
-DATA_SETS=(pacmaze-02-mid-sparse.txt)
 
 # parse the options
 while getopts 'd:v:h' opt ; do

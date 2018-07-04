@@ -37,7 +37,7 @@ def line_mean_plot(a, y_label, save=''):
     plt.ylabel(y_label.title())
     plt.title(y_label.title() + ' x Iterations')
     plt.grid(True)
-
+    # plt.yscale('symlog')
     if save:
         print('saving to ' + save)
         plt.savefig(save + '_line_mean.png', dpi=300)
