@@ -1,4 +1,5 @@
 import random
+from stats import Stats
 
 
 class QLearning(object):
@@ -15,6 +16,8 @@ class QLearning(object):
         self.__valid_states = self.__initialize_valid_states()
 
         random.seed(seed)
+
+        self.stats = Stats()
 
     def __initialize_q(self):
         r = {'0': [10.], '&': [-10.], '-': [0.], '#': [0.]}
@@ -58,12 +61,17 @@ class QLearning(object):
 
         self.__q[s[0]][s[1]][a] += lr * (r + y * next_q - cur_q)
 
+    def save_stats(self, out_file):
+        self.stats.dump_to_file(out_file)
+
     def run(self):
         episode = 0
         iteration = 0
         while True:
             state = self.__initialize_state()
             while not self.__is_terminal(state):
+                self.stats.add_data(self.__q)
+
                 if iteration >= self.__iterations:
                     return self.__q
 

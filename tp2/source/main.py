@@ -26,18 +26,7 @@ def save_q(maze, q):
                         f.write('%d,%d,%s,%f\n' % (i, j, action, q_value))
 
 
-def main(map_file, alpha, discount, n_iterations):
-
-    maze = read_map(map_file, 1)
-
-    for line in maze:
-        print(''.join(line))
-
-    qlearn = QLearning(maze, alpha, discount, n_iterations, seed=1)
-    q = qlearn.run()
-
-    save_q(maze, q)
-
+def save_pi(maze, q):
     with open('pi.txt', 'w') as f:
         for i, line in enumerate(maze):
             for j, element in enumerate(line):
@@ -46,7 +35,25 @@ def main(map_file, alpha, discount, n_iterations):
                 else:
                     f.write(element)
             f.write('\n')
-    return
+
+
+def main(args):
+    map_file = args.file
+    alpha = args.alpha
+    discount = args.discount
+    n_iterations = args.iterations
+    seed = args.seed
+
+    maze = read_map(map_file, 1)
+
+    qlearn = QLearning(maze, alpha, discount, n_iterations, seed=seed)
+    q = qlearn.run()
+
+    save_q(maze, q)
+    save_pi(maze, q)
+
+    if args.stats:
+        qlearn.save_stats(args.stats)
 
 
 if __name__ == '__main__':
@@ -58,12 +65,11 @@ if __name__ == '__main__':
                         help='Discount factor.')
     parser.add_argument('-n', '--iterations', type=int, required=True,
                         help='iterations to be run.')
+    parser.add_argument('--seed', type=int, default=None,
+                        help='Seed for random number generator')
+    parser.add_argument('--stats',
+                        help='File to save statistics.')
 
     args = parser.parse_args()
 
-    map_file = args.file
-    alpha = args.alpha
-    discount = args.discount
-    n_iterations = args.iterations
-
-    main(map_file, alpha, discount, n_iterations)
+    main(args)
