@@ -43,7 +43,7 @@ def main(args):
     discount = args.discount
     n_iterations = args.iterations
     seed = args.seed
-    epsilon = args.epislon if args.epsilon else 0.2
+    epsilon = args.epsilon if args.epsilon else 0.2
 
     maze = read_map(map_file, 1)
 
