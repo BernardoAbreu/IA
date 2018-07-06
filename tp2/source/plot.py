@@ -1,6 +1,6 @@
 #!/usr/bin/env  python
 
-
+import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 # import pandas as pd
@@ -13,7 +13,7 @@ params = {
     'legend.fontsize': 'x-large',
     'figure.figsize': (20, 15),
     'axes.labelsize': 'x-large',
-    'axes.titlesize': 'x-large',
+    'axes.titlesize': 'large',
     'xtick.labelsize': 'x-large',
     'ytick.labelsize': 'x-large'
 }
@@ -26,21 +26,38 @@ def loadtxt(file, delimiter=','):
                         for line in f])
 
 
-def line_mean_plot(a, y_label, save=''):
-    means = []
-    for column in a.T:
-        means.append(np.mean(column))
-    a_means = np.array(means)
-    print a_means
-    plt.plot(np.arange(len(a_means) - 1), a_means[1:])
-    plt.xlabel('Iterations')
-    plt.ylabel(y_label.title())
-    plt.title(y_label.title() + ' x Iterations')
+def line_mean_plot(a_l, y_label, labels, save=''):
+    plt.rcParams.update(params)
+    fig = plt.figure(figsize=(19, 11))
+    ax = fig.add_subplot(111)
+
+    list_of_means = []
+    for a in a_l:
+        means = []
+        for column in a.T:
+            means.append(np.mean(column))
+        a_means = np.array(means)
+        list_of_means.append(a_means)
+        print(a_means)
+    
+    # plt.plot(np.arange(len(a_means)), a_means)
+    plt.xlabel('Iterations', fontsize=48)
+    plt.ylabel(y_label.title().replace('_', ' '), fontsize=48)
+    plt.title(y_label.title().replace('_', ' ') + ' x Iterations', fontsize=48)
+    ax.tick_params('both', labelsize=40)
     plt.grid(True)
-    # plt.yscale('symlog')
+
+    print(labels)
+    line1 = None
+    for mean, d in zip(list_of_means, labels):
+        line1, = plt.plot(mean, label=str(d))
+
+    plt.legend(handler_map={line1: HandlerLine2D(numpoints=4)}, fontsize=34)
+    # line1, = plt.plot(a_means, label=str(d))
+
     if save:
         print('saving to ' + save)
-        plt.savefig(save + '_line_mean.png', dpi=300)
+        plt.savefig(save + '_line_mean.eps', dpi=fig.dpi, format='eps')
     else:
         plt.show()
 
@@ -54,7 +71,7 @@ def line_plot(a, y_label, save=''):
 
     if save:
         print('saving to ' + save)
-        plt.savefig(save + '_line.png', dpi=300)
+        plt.savefig(save + '_line.eps', dpi=300, format='eps')
     plt.show()
 
 
@@ -67,39 +84,40 @@ def boxplot(a, y_label, save=''):
         [str(i) if i % 5 == 0 else '' for i in range(101)])
 
     plt.xlabel('Iterations')
-    plt.ylabel(y_label.title())
-    plt.title(y_label.title() + ' x Iterations')
+    plt.ylabel(y_label.title().replace('_', ' '))
+    plt.title(y_label.title().replace('_', ' ') + ' x Iterations')
     plt.grid(True)
+    plt.tight_layout()
 
     if save:
         print('saving to ' + save)
-        plt.savefig(save + '_boxplot.png', dpi=fig.dpi)
+        plt.savefig(save + '_boxplot.eps', dpi=fig.dpi, format='eps')
 
 
 if __name__ == '__main__':
     print('running')
-    in_file = argv[1]
-    print(in_file)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('dirs', nargs='+')
+    parser.add_argument('-i', '--input', required=True, help='Input file.')
+    parser.add_argument('-o', '--output', help='Output file.')
+    parser.add_argument('-t', '--plot-type', help='Plot type.', default='mean')
 
-    label = in_file.split('/')[-1].split('__')[-1].split('.')[0]
-    a = loadtxt(in_file)
+    args = parser.parse_args()
 
-    outputfolder = (argv[2] + '/' + label) if len(argv) > 2 else ''
+    dirs = args.dirs
+    in_file = args.input
+    a_list = [loadtxt('%s/%s' % (d, in_file)) for d in dirs]
+    labels = [d.split('/')[-1] for d in dirs]
+
+    label_title = in_file.split('__')[-1].split('.')[0]
+    outputfolder = (args.output + label_title) if args.output else ''
     print(outputfolder)
-    print len(argv)
-    if len(argv) < 4:
-        print "no"
-        line_mean_plot(a, label, outputfolder)
-    else:
-        t = argv[3]
-
-        if t == 'boxplot':
-            # print 'box'
-            boxplot(a, label, outputfolder)
-        elif t == 'mean':
-            line_mean_plot(a, label, outputfolder)
-        elif t == 'line':
-            line_plot(a, label)
+    if args.plot_type == 'boxplot':
+        boxplot(a_list, label, outputfolder)
+    elif args.plot_type == 'mean':
+        line_mean_plot(a_list, label_title, labels, outputfolder)
+    elif args.plot_type == 'line':
+        line_plot(a_list, label)
 
     # print argv
     # label = argv[1]

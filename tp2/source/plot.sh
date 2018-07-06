@@ -14,6 +14,7 @@ DIRS=0
 
 DATA_SETS=(pacmaze-01-tiny.txt pacmaze-02-mid-sparse.txt pacmaze-03-tricky.txt)
 
+
 # parse the options
 while getopts 'd:v:h' opt ; do
   case $opt in
@@ -34,19 +35,22 @@ for DATA_SET in ${DATA_SETS[*]}; do
     if $USE_ALL; then
         TEST_VERSION=(`ls ${BASE}/${DATA_SET}`)
     fi
-
+    DATA=${DATA_SET#*0}
+    DATA=${DATA%-*}
     for VERSION in ${TEST_VERSION[*]}; do
+        mkdir -p $PA/$OUTPUT_DIR/$DATA_SET/$VERSION/
+        DIR="${BASE}/${DATA_SET}/${VERSION}/"
 
-        ls $BASE/$DATA_SET/$VERSION | while read -r TEST_TYPE ; do
+        TEST_TYPES_STR=$(ls $DIR)
+        TEST_TYPES=($(printf "${DIR}%s " $TEST_TYPES_STR))
 
-            mkdir -p $PA/$OUTPUT_DIR/$DATA_SET/$VERSION/$TEST_TYPE
-            DIR=$BASE/$DATA_SET/$VERSION/$TEST_TYPE
-            
-            echo $DIR
-            ls $DIR | grep __ | while read -r TEST_OUTPUT ; do
-                echo "Processing $TEST_OUTPUT"
-                $PA/source/plot.py $DIR/$TEST_OUTPUT $PA/$OUTPUT_DIR/$DATA_SET/$VERSION/$TEST_TYPE
-            done
+        TEST_OUTPUTS_STR=$(ls "${TEST_TYPES[0]}")
+        TEST_OUTPUTS=($TEST_OUTPUTS_STR)
+
+        for TEST_OUTPUT in ${TEST_OUTPUTS[@]}; do
+            $PA/source/plot.py "${TEST_TYPES[@]}" -i $TEST_OUTPUT -o "${PA}/${OUTPUT_DIR}/${DATA_SET}/${VERSION}/${DATA}_${VERSION}_"
         done
+
+
     done
 done
